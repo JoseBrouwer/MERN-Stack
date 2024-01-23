@@ -1,6 +1,8 @@
 import express from "express";
+import dotenv from 'dotenv'
+dotenv.config();
 import products from "./data/products.js" //extension needed in backend for own modules
-const port = 5000; //different port for backend
+const port = process.env.PORT || 5000; //different port for backend
 
 const app = express();
 

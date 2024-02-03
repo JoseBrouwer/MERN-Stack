@@ -3,7 +3,7 @@ import {useState} from 'react'
 import {useParams, useNavigate} from "react-router-dom";
 import {Link} from 'react-router-dom';
 import {Form, Row, Col, Image, ListGroup, Card, Button, ListGroupItem} from 'react-bootstrap';
-import { UseDispatch, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Rating from '../components/Rating';
 import { useGetProductDetailsQuery } from '../slices/productsApiSlice';
 import Loader from "../components/Loader";

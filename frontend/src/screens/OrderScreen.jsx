@@ -10,6 +10,7 @@ import {
   useGetOrderDetailsQuery,
   usePayOrderMutation,
   useGetPayPalClientIdQuery,
+  useDeliverOrderMutation,
 } from "../slices/ordersApiSlice";
 
 const OrderScreen = () => {
@@ -18,6 +19,9 @@ const OrderScreen = () => {
   const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId);
 
   const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
+
+  const [deliverOrder, { isLoading: loadingDeliver }] =
+    useDeliverOrderMutation();
   
   const { userInfo } = useSelector((state) => state.auth);
   
@@ -85,6 +89,11 @@ const OrderScreen = () => {
       });
   }
 
+  const deliverOrderHandler = async () => {
+    await deliverOrder(orderId);
+    refetch();
+  };
+
   return isLoading ? (
     <Loader />
   ) : error ? (
@@ -133,18 +142,15 @@ const OrderScreen = () => {
             </ListGroup.Item>
 
             <ListGroup.Item>
-              
               <h2>Order Items</h2>
-              
+
               {order.orderItems.length === 0 ? (
                 <Message>Order is empty</Message>
               ) : (
                 <ListGroup variant="flush">
                   {order.orderItems.map((item, index) => (
-                    
                     <ListGroup.Item key={index}>
                       <Row>
-                        
                         <Col md={1}>
                           <Image
                             src={item.image}
@@ -153,7 +159,7 @@ const OrderScreen = () => {
                             rounded
                           />
                         </Col>
-                        
+
                         <Col>
                           <Link to={`/product/${item.product}`}>
                             {item.name}
@@ -163,54 +169,49 @@ const OrderScreen = () => {
                         <Col md={4}>
                           {item.qty} x ${item.price} = ${item.qty * item.price}
                         </Col>
-                      
                       </Row>
                     </ListGroup.Item>
-
                   ))}
                 </ListGroup>
               )}
-
             </ListGroup.Item>
           </ListGroup>
         </Col>
         <Col md={4}>
-          
           <Card>
             <ListGroup variant="flush">
-              
               <ListGroup.Item>
                 <h2>Order Summary</h2>
               </ListGroup.Item>
-              
+
               <ListGroup.Item>
                 <Row>
                   <Col>Items</Col>
                   <Col>${order.itemsPrice}</Col>
                 </Row>
               </ListGroup.Item>
-              
+
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping</Col>
                   <Col>${order.shippingPrice}</Col>
                 </Row>
               </ListGroup.Item>
-              
+
               <ListGroup.Item>
                 <Row>
                   <Col>Tax</Col>
                   <Col>${order.taxPrice}</Col>
                 </Row>
               </ListGroup.Item>
-              
+
               <ListGroup.Item>
                 <Row>
                   <Col>Total</Col>
                   <Col>${order.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
-              
+
               {!order.isPaid && (
                 <ListGroup.Item>
                   {loadingPay && <Loader />}
@@ -219,7 +220,6 @@ const OrderScreen = () => {
                     <Loader />
                   ) : (
                     <div>
-
                       {/* <Button
                         style={{ marginBottom: "10px" }}
                         onClick={onApproveTest}
@@ -234,16 +234,30 @@ const OrderScreen = () => {
                           onError={onError}
                         ></PayPalButtons>
                       </div>
-
                     </div>
                   )}
                 </ListGroup.Item>
               )}
 
-              {/* {MARK AS DELIVERED PLACEHOLDER} */}
+              {loadingDeliver && <Loader />}
+
+              {userInfo &&
+                userInfo.isAdmin &&
+                order.isPaid &&
+                !order.isDelivered && (
+                  <ListGroup.Item>
+                    <Button
+                      type="button"
+                      className="btn btn-block"
+                      onClick={deliverOrderHandler}
+                    >
+                      Mark As Delivered
+                    </Button>
+                  </ListGroup.Item>
+                )
+              }
             </ListGroup>
           </Card>
-
         </Col>
       </Row>
     </>

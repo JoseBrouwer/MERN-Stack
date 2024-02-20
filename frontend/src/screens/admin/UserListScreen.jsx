@@ -61,6 +61,7 @@ const UserListScreen = () => {
                   )}
                 </td>
                 <td>
+                  {/* Remove the admin check if you wish to modify admins */}
                   {!user.isAdmin && (
                     <>
                       <LinkContainer

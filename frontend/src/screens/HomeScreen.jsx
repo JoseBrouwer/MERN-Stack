@@ -6,6 +6,7 @@ import { useGetProductsQuery } from '../slices/productsApiSlice.js';
 import Loader from '../components/Loader';
 import Message from '../components/Message.jsx';
 import Paginate from '../components/Paginate.jsx';
+import ProductCarousel from '../components/ProductCarousel.jsx';
 
 const HomeScreen = () => {
   const { keyword, pageNumber } = useParams();
@@ -19,7 +20,14 @@ const HomeScreen = () => {
 
   return (
     <>
-      { keyword && <Link to="/" className="btn btn-warning mb-4">Go Back</Link>}
+      { !keyword ? (
+        <ProductCarousel />
+      ) : (
+        <Link to="/" className="btn btn-warning mb-4">
+          Go Back
+        </Link>
+      )}
+      
       {isLoading ? (
         <Loader />
       ) : error ? (

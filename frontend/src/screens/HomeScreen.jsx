@@ -1,6 +1,6 @@
 import React from 'react';
 import {Row, Col} from 'react-bootstrap';
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Product from '../components/Product.jsx';
 import { useGetProductsQuery } from '../slices/productsApiSlice.js';
 import Loader from '../components/Loader';
@@ -8,16 +8,18 @@ import Message from '../components/Message.jsx';
 import Paginate from '../components/Paginate.jsx';
 
 const HomeScreen = () => {
-  const { pageNumber } = useParams();
+  const { keyword, pageNumber } = useParams();
 
   console.log(pageNumber);
 
   const { data, isLoading, error } = useGetProductsQuery({
+    keyword,
     pageNumber,
   });
 
   return (
     <>
+      { keyword && <Link to="/" className="btn btn-warning mb-4">Go Back</Link>}
       {isLoading ? (
         <Loader />
       ) : error ? (
@@ -35,10 +37,11 @@ const HomeScreen = () => {
               </Col>
             ))}
           </Row>
-          <Paginate 
-            pages={data.pages} 
-            page={data.page} 
-          />
+            <Paginate 
+              pages={data.pages} 
+              page={data.page}
+              keyword={keyword ? keyword : ''}
+            />
         </>
       )}
     </>

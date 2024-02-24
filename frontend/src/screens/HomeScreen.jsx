@@ -7,6 +7,7 @@ import Loader from '../components/Loader';
 import Message from '../components/Message.jsx';
 import Paginate from '../components/Paginate.jsx';
 import ProductCarousel from '../components/ProductCarousel.jsx';
+import Meta from "../components/Meta.jsx";
 
 const HomeScreen = () => {
   const { keyword, pageNumber } = useParams();
@@ -27,7 +28,7 @@ const HomeScreen = () => {
           Go Back
         </Link>
       )}
-      
+
       {isLoading ? (
         <Loader />
       ) : error ? (
@@ -36,6 +37,7 @@ const HomeScreen = () => {
         </Message>
       ) : (
         <>
+          <Meta />
           <h1>Latest Products</h1>
           <Row>
             {data.products.map((product) => (

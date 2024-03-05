@@ -1,7 +1,6 @@
 import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import ConnectDB from "./config/db.js";
 import connectDB from "./config/db.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import productRoutes from "./routes/productRoutes.js";

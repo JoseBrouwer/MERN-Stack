@@ -26,3 +26,7 @@ yarn-error.log*
 
 #package.json
 #package-lock.json
+example.env
+sonar-project.properties
+.scannerwork/.sonar_lock
+.scannerwork/report-task.txt

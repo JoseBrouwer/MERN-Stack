@@ -70,8 +70,8 @@ const PlaceOrderScreen = () => {
                 <Message>Your cart is empty</Message>
               ) : (
                 <ListGroup variant="flush">
-                  {cart.cartItems.map((item, index) => (
-                    <ListGroup.Item key={index}>
+                  {cart.cartItems.map((item) => (
+                    <ListGroup.Item key={item.id}>
                       <Row>
                         <Col md={1}>
                           <Image

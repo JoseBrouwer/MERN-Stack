@@ -29,3 +29,10 @@ sonar-project.properties
 
 #package.json
 #package-lock.json
+sonar-project.properties
+.scannerwork/.sonar_lock
+.scannerwork/report-task.txt
+frontend/package-lock.json
+frontend/package.json
+frontend/package-lock.json
+frontend/package.json

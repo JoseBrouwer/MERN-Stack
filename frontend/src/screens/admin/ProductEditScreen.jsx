@@ -35,8 +35,6 @@ const ProductEditScreen = () => {
   const [uploadProductImage, { isLoading: loadingUpload }] =
     useUploadProductImageMutation();
 
-  //useUploadProductImageMutation();
-
   const navigate = useNavigate();
 
   const submitHandler = async (e) => {

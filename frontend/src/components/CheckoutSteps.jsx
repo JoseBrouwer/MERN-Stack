@@ -56,4 +56,5 @@ CheckoutSteps.propTypes = {
   step4: PropTypes.bool.isRequired,
 };
 
+
 export default CheckoutSteps;

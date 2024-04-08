@@ -10,12 +10,9 @@ const Message = ({ variant, children }) => {
   )
 };
 
-Message.defaultProps = {
-    variant: 'info',
-};
-
 Message.propTypes = {
   children: PropTypes.node,
+  variant: PropTypes.string,
 };
 
 export default Message;

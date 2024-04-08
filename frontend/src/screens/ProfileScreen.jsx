@@ -23,7 +23,7 @@ const ProfileScreen = () => {
     const [updateProfile] =
       useProfileMutation();
 
-    const { data: orders, isLoading, error } = useGetMyOrdersQuery();
+    const { data: orders, error } = useGetMyOrdersQuery();
 
     useEffect(() => {
       setName(userInfo.name);

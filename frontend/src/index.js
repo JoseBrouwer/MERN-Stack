@@ -11,7 +11,6 @@ import { HelmetProvider } from 'react-helmet-async';
 import PrivateRoute from './components/PrivateRoute';
 import { Provider } from 'react-redux';
 import store from './store';
- // import 'bootstrap/dist/css/bootstrap.min.css';
 import './assets/styles/bootsrap.custom.css'
 import './assets/styles/index.css';
 import App from './App';

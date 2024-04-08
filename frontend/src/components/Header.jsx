@@ -36,7 +36,7 @@ const logoutHandler = async () => {
         <Container>
           <LinkContainer to="/">
             <Navbar.Brand>
-              <img src={logo} alt="ProShop" />
+              <img src={logo} alt="ProShop" />{' '}
               ProShop
             </Navbar.Brand>
           </LinkContainer>

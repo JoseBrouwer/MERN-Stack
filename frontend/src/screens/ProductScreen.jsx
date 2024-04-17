@@ -12,8 +12,6 @@ import Message from "../components/Message.jsx";
 import { addToCart } from '../slices/cartSlice.js';
 import Meta from "../components/Meta.jsx";
 
-
-
 const ProductScreen = () => {
   const { id: productId } = useParams();
 

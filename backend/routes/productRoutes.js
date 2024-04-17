@@ -12,6 +12,14 @@ import {
 import { protect, admin } from '../middleware/authMiddleware.js';
 import checkObjectId from "../middleware/checkObjectId.js";
 
+/*
+// Added route for getting products with filters
+router.route('/').get(getProducts).post(protect, admin, createProduct);
+
+// Added route for filtering products by price and category
+router.route('/filter').get(getFilteredProducts);
+*/
+
 router.route('/').get(getProducts).post(protect, admin, createProduct);
 router.route('/:id/reviews').post(protect, checkObjectId, createProductReview);
 router.get('/top', getTopProducts);

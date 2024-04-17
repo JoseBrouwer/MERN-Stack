@@ -1,6 +1,21 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import Product from "../models/productModel.js";
 
+// Implement fltering for advnaced search capabilities
+const filterProducts = async (req) => {
+    const { minPrice, maxPrice, category } = req.query;
+    const filter = {};
+
+    if (minPrice && maxPrice) {
+        filter.price = { $gte: parseInt(minPrice), $lte: parseInt(maxPrice) };
+    }
+    if (category) {
+        filter.category = category;
+    }
+
+    return filter;
+};
+
 // @desc Fetch all products
 // @route GET /api/products
 // @access Public
@@ -17,8 +32,10 @@ const getProducts = asyncHandler(async (req, res) => {
         }
         : {};
 
-    const count = await Product.countDocuments({ ...keyword });
-    const products = await Product.find({ ...keyword })
+    const filter = await filterProducts(req);
+
+    const count = await Product.countDocuments({ ...keyword, ...filter });
+    const products = await Product.find({ ...keyword, ...filter })
         .limit(pageSize)
         .skip(pageSize * (page - 1));
 

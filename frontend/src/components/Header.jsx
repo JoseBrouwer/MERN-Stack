@@ -1,7 +1,7 @@
 import React from 'react';
-import {useNavigate} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {Navbar, Nav, Container, Badge, NavDropdown} from 'react-bootstrap';
-import {FaShoppingCart, FaUser} from 'react-icons/fa';
+import { FaShoppingCart, FaUser, FaBookmark } from "react-icons/fa";
 import {LinkContainer} from 'react-router-bootstrap';
 import {useSelector, useDispatch} from 'react-redux';
 import {useLogoutMutation} from '../slices/usersApiSlice';
@@ -54,6 +54,12 @@ const logoutHandler = async () => {
                       {cartItems.reduce((a, c) => a + c.qty, 0)}
                     </Badge>
                   )}
+                </Nav.Link>
+              </LinkContainer>
+
+              <LinkContainer to="/saveforlater">
+                <Nav.Link href="/saveforlater">
+                  <FaBookmark /> Save For Later
                 </Nav.Link>
               </LinkContainer>
 

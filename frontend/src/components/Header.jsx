@@ -57,6 +57,12 @@ const logoutHandler = async () => {
                 </Nav.Link>
               </LinkContainer>
 
+              <LinkContainer to="/contact">
+                  <Nav.Link href="/contact">
+                    <FaUser /> Contact{" "}
+                  </Nav.Link>
+                  </LinkContainer>
+
               {userInfo ? (
                 <NavDropdown title={userInfo.name} id="username">
                   <LinkContainer to="/profile">

@@ -1,21 +1,6 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import Product from "../models/productModel.js";
 
-// Implement fltering for advnaced search capabilities
-const filterProducts = async (req) => {
-    const { minPrice, maxPrice, category } = req.query;
-    const filter = {};
-
-    if (minPrice && maxPrice) {
-        filter.price = { $gte: parseInt(minPrice), $lte: parseInt(maxPrice) };
-    }
-    if (category) {
-        filter.category = category;
-    }
-
-    return filter;
-};
-
 // @desc Fetch all products
 // @route GET /api/products
 // @access Public
@@ -23,7 +8,8 @@ const getProducts = asyncHandler(async (req, res) => {
     const pageSize = process.env.PAGINATION_LIMIT;
     const page = Number(req.query.pageNumber) || 1;
 
-    const keyword = req.query.keyword
+    // Default keyword search filter
+    const keywordFilter = req.query.keyword
         ? {
             name: {
                 $regex: req.query.keyword,
@@ -32,10 +18,27 @@ const getProducts = asyncHandler(async (req, res) => {
         }
         : {};
 
-    const filter = await filterProducts(req);
+    // Initialize additional filters to an empty object
+    let additionalFilters = {};
 
-    const count = await Product.countDocuments({ ...keyword, ...filter });
-    const products = await Product.find({ ...keyword, ...filter })
+    // Check if minPrice and maxPrice are provided in the query
+    if (req.query.minPrice && req.query.maxPrice) {
+        additionalFilters.price = {
+            $gte: parseInt(req.query.minPrice),
+            $lte: parseInt(req.query.maxPrice),
+        };
+    }
+
+    // Check if category is provided in the query
+    if (req.query.category) {
+        additionalFilters.category = req.query.category;
+    }
+
+    // Combine keyword filter and additional filters
+    const combinedFilter = { ...keywordFilter, ...additionalFilters };
+
+    const count = await Product.countDocuments(combinedFilter);
+    const products = await Product.find(combinedFilter)
         .limit(pageSize)
         .skip(pageSize * (page - 1));
 

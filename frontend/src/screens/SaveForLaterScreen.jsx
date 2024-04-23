@@ -1,10 +1,20 @@
-// SaveForLaterScreen.jsx
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { ListGroup, Image, Button, Row, Col, Card } from "react-bootstrap";
+import {
+  ListGroup,
+  Image,
+  Button,
+  Row,
+  Col,
+  Card,
+  Form,
+} from "react-bootstrap";
+import { FaTrash } from "react-icons/fa";
 import Message from "../components/Message";
 import { removeFromSaveForLater, moveToCart } from "../slices/laterSlice";
+import { addToCart } from "../slices/cartSlice";
+import { addToSaveForLater, updateItemQuantity } from "../slices/laterSlice.js";
 
 const SaveForLaterScreen = () => {
   const dispatch = useDispatch();
@@ -14,9 +24,17 @@ const SaveForLaterScreen = () => {
     dispatch(removeFromSaveForLater(id));
   };
 
+  const addToSaveForLaterHandler = (item) => {
+    dispatch(addToSaveForLater(item));
+  };
+
   const moveToCartHandler = (item) => {
-    dispatch(moveToCart(item));
-    dispatch(removeFromSaveForLater(item._id));
+    if (item.countInStock >= item.qty) {
+      dispatch(addToCart({ ...item, qty: item.qty }));
+      dispatch(removeFromSaveForLater(item._id));
+    } else {
+      alert("Not enough stock available");
+    }
   };
 
   return (
@@ -38,16 +56,39 @@ const SaveForLaterScreen = () => {
                   <Col md={3}>
                     <Link to={`/product/${item._id}`}>{item.name}</Link>
                   </Col>
+
+                  <Col md={2}>${item.price}</Col>
+
+                  <Col md={2}>
+                    <Form.Control
+                      as="select"
+                      value={item.qty}
+                      onChange={(e) =>
+                        dispatch(
+                          updateItemQuantity({
+                            _id: item._id,
+                            qty: Number(e.target.value),
+                          })
+                        )
+                      }
+                    >
+                      {[...Array(item.countInStock).keys()].map((x) => (
+                        <option key={x + 1} value={x + 1}>
+                          {x + 1}
+                        </option>
+                      ))}
+                    </Form.Control>
+                  </Col>
                   <Col md={2}>
                     <Button
                       type="button"
                       variant="light"
                       onClick={() => removeFromLaterHandler(item._id)}
                     >
-                      Remove
+                      <FaTrash />
                     </Button>
                   </Col>
-                  <Col md={2}>
+                  <Col md={3}>
                     <Button
                       type="button"
                       onClick={() => moveToCartHandler(item)}

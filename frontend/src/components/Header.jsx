@@ -13,6 +13,7 @@ import { resetCart } from "../slices/cartSlice";
 const Header = () => {
   const {cartItems} = useSelector((state) => state.cart);
   const {userInfo} = useSelector((state) => state.auth);
+  const {savedItems} = useSelector((state) => state.later);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -60,6 +61,11 @@ const logoutHandler = async () => {
               <LinkContainer to="/saveforlater">
                 <Nav.Link href="/saveforlater">
                   <FaBookmark /> Save For Later
+                  {savedItems.length > 0 && (
+                    <Badge pill bg="success" style={{ marginLeft: "5px" }}>
+                      {savedItems.length}
+                    </Badge>
+                  )}
                 </Nav.Link>
               </LinkContainer>
 

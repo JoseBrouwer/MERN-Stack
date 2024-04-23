@@ -61,9 +61,9 @@ const ProductScreen = () => {
   }
 
   const addToSaveForLaterHandler = () => {
-    dispatch(addToSaveForLater(product));
-    navigate('/saveforlater');
-  }
+    dispatch(addToSaveForLater({ ...product, qty }));
+    navigate("/saveforlater");
+  };
 
   return (
     <>
@@ -168,7 +168,7 @@ const ProductScreen = () => {
                       Save For Later
                     </Button>
                   </ListGroup.Item>
-                  
+
                 </ListGroup>
               </Card>
             </Col>

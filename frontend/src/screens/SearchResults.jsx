@@ -42,10 +42,9 @@ const SearchResults = () => {
     }
     // Remove the trailing '&' character if it exists
     queryParams = queryParams.replace(/&$/, '');
-  
+
     navigate(queryParams);
   };
-  
 
   const handleCategorySelect = (selected) => {
     setSelectedCategories(selected);

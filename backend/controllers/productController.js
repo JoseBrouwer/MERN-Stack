@@ -171,6 +171,40 @@ const getTopProducts = asyncHandler(async (req, res) => {
     res.status(200).json(products);
 });
 
+// @desc Fetch filtered products
+// @route GET /api/products/filter
+// @access Public
+const getFilteredProducts = asyncHandler(async (req, res) => {
+    const pageSize = process.env.PAGINATION_LIMIT;
+    const page = Number(req.query.pageNumber) || 1;
+
+    // Initialize additional filters to an empty object
+    let additionalFilters = {};
+
+    // Check if minPrice and maxPrice are provided in the query
+    if (req.query.minPrice && req.query.maxPrice) {
+        additionalFilters.price = {
+            $gte: parseInt(req.query.minPrice),
+            $lte: parseInt(req.query.maxPrice),
+        };
+    }
+
+    // Check if category is provided in the query
+    if (req.query.category) {
+        additionalFilters.category = req.query.category;
+    }
+
+    // Combine additional filters
+    const combinedFilter = { ...additionalFilters };
+
+    const count = await Product.countDocuments(combinedFilter);
+    const products = await Product.find(combinedFilter)
+        .limit(pageSize)
+        .skip(pageSize * (page - 1));
+
+    res.json({ products, page, pages: Math.ceil(count / pageSize) });
+});
+
 export {
     getProducts,
     getProductById,
@@ -179,4 +213,5 @@ export {
     deleteProduct,
     createProductReview,
     getTopProducts,
+    getFilteredProducts,    // Export function for filtered products
 };

@@ -45,7 +45,9 @@ const router = createBrowserRouter(
 
       // Search Functionality
       <Route path="/search/:keyword" element={<SearchResults />} />
+      <Route path="/search/:keyword/filter" element={<SearchResults />} />
       <Route path="/search/:keyword/page/:pageNumber" element={<SearchResults />} />
+      
 
       <Route path='' element={<PrivateRoute />}>
         <Route path='/shipping' element={<ShippingScreen />} />

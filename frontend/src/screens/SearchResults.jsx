@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Row, Col, Form, Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
 import Product from '../components/Product';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
@@ -10,12 +9,27 @@ import Meta from '../components/Meta';
 import { useGetProductsQuery } from '../slices/productsApiSlice';
 
 const SearchResults = () => {
-  const navigate = useNavigate();
   const { keyword } = useParams();
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const navigate = useNavigate();
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+
+  const [minPrice, setMinPrice] = useState(queryParams.get('minPrice') || '');
+  const [maxPrice, setMaxPrice] = useState(queryParams.get('maxPrice') || '');
+  const [selectedCategories, setSelectedCategories] = useState(queryParams.get('categories')?.split(',') || []);
   const [pageNumber, setPageNumber] = useState(1);
+
+  useEffect(() => {
+    const params = new URLSearchParams(search);
+    setMinPrice(params.get('minPrice') || '');
+    setMaxPrice(params.get('maxPrice') || '');
+    setSelectedCategories(params.get('categories')?.split(',') || []);
+  }, [search]);
+
+  const handleFilterSubmit = (e) => {
+    e.preventDefault();
+    navigate(`/search/${keyword}/filter?minPrice=${minPrice}&maxPrice=${maxPrice}&categories=${selectedCategories.join(',')}`);
+  };
 
   const { data, isLoading, error } = useGetProductsQuery({
     keyword,
@@ -24,16 +38,6 @@ const SearchResults = () => {
     categories: selectedCategories,
     pageNumber,
   });
-
-  useEffect(() => {
-    setPageNumber(1); // Reset page number when keyword or filters change
-  }, [keyword, minPrice, maxPrice, selectedCategories]);
-
-  const handleFilterSubmit = (e) => {
-    e.preventDefault();
-    navigate(`/search/${keyword}/filter?minPrice=${minPrice}&maxPrice=${maxPrice}&categories=${selectedCategories.join(',')}`);
-  };
-
 
   return (
     <>

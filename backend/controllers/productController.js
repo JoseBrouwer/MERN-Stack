@@ -155,38 +155,25 @@ const getTopProducts = asyncHandler(async (req, res) => {
 // @route GET /api/products/filter
 // @access Public
 const getFilteredProducts = asyncHandler(async (req, res) => {
-    const pageSize = process.env.PAGINATION_LIMIT;
-    const page = Number(req.query.pageNumber) || 1;
-
-    // Parse and validate query parameters
-    const minPrice = req.query.minPrice ? parseInt(req.query.minPrice) : 0;
-    const maxPrice = req.query.maxPrice ? parseInt(req.query.maxPrice) : Number.MAX_SAFE_INTEGER;
-    const category = req.query.category ? req.query.category : '';
-    const keyword = req.query.keyword
-  ? {
-      name: {
-        $regex: req.query.keyword,
-        $options: 'i',
-      },
-  }
-  : {};
-
-    // Build the filter object based on query parameters
-    const filter = keyword;
-    if (minPrice !== 0 || maxPrice !== Number.MAX_SAFE_INTEGER) {
-      filter.price = { $gte: minPrice, $lte: maxPrice };
+    const { minPrice, maxPrice, categories, pageNumber = 1 } = req.query;
+    const pageSize = parseInt(process.env.PAGINATION_LIMIT);
+  
+    const filter = {
+      price: { $gte: minPrice || 0, $lte: maxPrice || Number.MAX_SAFE_INTEGER },
+    };
+  
+    if (categories) {
+      filter.category = { $in: categories.split(',') };
     }
-    if (category !== '') {
-      filter.category = category;
-    }
-
+  
     const count = await Product.countDocuments(filter);
     const products = await Product.find(filter)
-        .limit(pageSize)
-        .skip(pageSize * (page - 1));
-
-    res.json({ products, page, pages: Math.ceil(count / pageSize) });
+      .limit(pageSize)
+      .skip(pageSize * (page - 1));
+  
+    res.json({ products, page: pageNumber, pages: Math.ceil(count / pageSize) });
 });
+  
 
 export {
     getProducts,

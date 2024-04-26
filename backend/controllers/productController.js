@@ -1,15 +1,15 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import Product from "../models/productModel.js";
 
-// @desc Fetch all products
+// @desc Fetch all products with optional filters
 // @route GET /api/products
 // @access Public
 const getProducts = asyncHandler(async (req, res) => {
-    const pageSize = process.env.PAGINATION_LIMIT;
+    const pageSize = parseInt(process.env.PAGINATION_LIMIT) || 10;  // Default page size fallback
     const page = Number(req.query.pageNumber) || 1;
 
-    // Default keyword search filter
-    const keywordFilter = req.query.keyword
+    // Building the keyword search object
+    const keyword = req.query.keyword
         ? {
             name: {
                 $regex: req.query.keyword,
@@ -18,32 +18,38 @@ const getProducts = asyncHandler(async (req, res) => {
         }
         : {};
 
-    // Initialize additional filters to an empty object
-    let additionalFilters = {};
+    // Parse price filter parameters
+    const minPrice = req.query.minPrice !== undefined ? Number(req.query.minPrice) : 0;
+    const maxPrice = req.query.maxPrice !== undefined ? Number(req.query.maxPrice) : Number.MAX_SAFE_INTEGER;
 
-    // Check if minPrice and maxPrice are provided in the query
-    if (req.query.minPrice && req.query.maxPrice) {
-        additionalFilters.price = {
-            $gte: parseInt(req.query.minPrice),
-            $lte: parseInt(req.query.maxPrice),
-        };
-    }
+    // Parse category filter if provided
+    const categoryFilter = req.query.category ? { category: req.query.category } : {};
 
-    // Check if category is provided in the query
-    if (req.query.category) {
-        additionalFilters.category = req.query.category;
-    }
+    // Combine all filters
+    const filters = {
+        ...keyword,
+        price: { $gte: minPrice, $lte: maxPrice },
+        ...categoryFilter
+    };
 
-    // Combine keyword filter and additional filters
-    const combinedFilter = { ...keywordFilter, ...additionalFilters };
+    // Remove filters with undefined or null values
+    Object.keys(filters).forEach(key => {
+        if (filters[key] === undefined || filters[key] === null || (typeof filters[key] === 'object' && Object.keys(filters[key]).length === 0)) {
+            delete filters[key];
+        }
+    });
 
-    const count = await Product.countDocuments(combinedFilter);
-    const products = await Product.find(combinedFilter)
+    const count = await Product.countDocuments(filters);
+    const products = await Product.find(filters)
         .limit(pageSize)
         .skip(pageSize * (page - 1));
 
     res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
+
+// module.exports = {
+//     getProducts
+// };
 
 // @desc Fetch a product
 // @route GET /api/products/:id
@@ -171,40 +177,6 @@ const getTopProducts = asyncHandler(async (req, res) => {
     res.status(200).json(products);
 });
 
-// @desc Fetch filtered products
-// @route GET /api/products/filter
-// @access Public
-const getFilteredProducts = asyncHandler(async (req, res) => {
-    const pageSize = process.env.PAGINATION_LIMIT;
-    const page = Number(req.query.pageNumber) || 1;
-
-    // Initialize additional filters to an empty object
-    let additionalFilters = {};
-
-    // Check if minPrice and maxPrice are provided in the query
-    if (req.query.minPrice && req.query.maxPrice) {
-        additionalFilters.price = {
-            $gte: parseInt(req.query.minPrice),
-            $lte: parseInt(req.query.maxPrice),
-        };
-    }
-
-    // Check if category is provided in the query
-    if (req.query.category) {
-        additionalFilters.category = req.query.category;
-    }
-
-    // Combine additional filters
-    const combinedFilter = { ...additionalFilters };
-
-    const count = await Product.countDocuments(combinedFilter);
-    const products = await Product.find(combinedFilter)
-        .limit(pageSize)
-        .skip(pageSize * (page - 1));
-
-    res.json({ products, page, pages: Math.ceil(count / pageSize) });
-});
-
 export {
     getProducts,
     getProductById,
@@ -213,5 +185,4 @@ export {
     deleteProduct,
     createProductReview,
     getTopProducts,
-    getFilteredProducts,    // Export function for filtered products
 };

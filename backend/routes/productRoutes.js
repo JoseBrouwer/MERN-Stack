@@ -8,24 +8,24 @@ import {
     deleteProduct,
     createProductReview,
     getTopProducts,
-    getFilteredProducts, // Import the function for filtered products
 } from "../controllers/productController.js";
 import { protect, admin } from '../middleware/authMiddleware.js';
 import checkObjectId from "../middleware/checkObjectId.js";
 
-// Added route for getting products with filters
+// Route for getting all products or adding a new product
 router.route('/').get(getProducts).post(protect, admin, createProduct);
 
-// Added route for filtering products by price and category
-router.route('/filter').get(getFilteredProducts);
-
-router.route('/:id/reviews').post(protect, checkObjectId, createProductReview);
+// Route for getting top rated products
 router.get('/top', getTopProducts);
-router.route('/search').get(getProducts);
+
+// Route for getting a product by ID, updating, or deleting it
 router
     .route('/:id')
     .get(checkObjectId, getProductById)
     .put(protect, admin, checkObjectId, updateProduct)
     .delete(protect, admin, checkObjectId, deleteProduct);
+
+// Route for creating a review for a product
+router.route('/:id/reviews').post(protect, checkObjectId, createProductReview);
 
 export default router;

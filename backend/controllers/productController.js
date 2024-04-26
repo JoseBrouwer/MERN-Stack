@@ -162,14 +162,22 @@ const getFilteredProducts = asyncHandler(async (req, res) => {
     const minPrice = req.query.minPrice ? parseInt(req.query.minPrice) : 0;
     const maxPrice = req.query.maxPrice ? parseInt(req.query.maxPrice) : Number.MAX_SAFE_INTEGER;
     const category = req.query.category ? req.query.category : '';
+    const keyword = req.query.keyword
+  ? {
+      name: {
+        $regex: req.query.keyword,
+        $options: 'i',
+      },
+  }
+  : {};
 
     // Build the filter object based on query parameters
-    const filter = {};
+    const filter = keyword;
     if (minPrice !== 0 || maxPrice !== Number.MAX_SAFE_INTEGER) {
-        filter.price = { $gte: minPrice, $lte: maxPrice };
+      filter.price = { $gte: minPrice, $lte: maxPrice };
     }
     if (category !== '') {
-        filter.category = category;
+      filter.category = category;
     }
 
     const count = await Product.countDocuments(filter);

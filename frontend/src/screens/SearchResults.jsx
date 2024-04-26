@@ -31,8 +31,9 @@ const SearchResults = () => {
 
   const handleFilterSubmit = (e) => {
     e.preventDefault();
-    navigate(`/search/${keyword}?minPrice=${minPrice}&maxPrice=${maxPrice}&categories=${selectedCategories.join(',')}`);
+    navigate(`/search/${keyword}/filter?minPrice=${minPrice}&maxPrice=${maxPrice}&categories=${selectedCategories.join(',')}`);
   };
+
 
   return (
     <>

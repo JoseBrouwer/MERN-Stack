@@ -5,10 +5,9 @@ import Product from "../models/productModel.js";
 // @route GET /api/products
 // @access Public
 const getProducts = asyncHandler(async (req, res) => {
-    const pageSize = parseInt(process.env.PAGINATION_LIMIT) || 10;  // Default page size fallback
+    const pageSize = process.env.PAGINATION_LIMIT;
     const page = Number(req.query.pageNumber) || 1;
 
-    // Building the keyword search object
     const keyword = req.query.keyword
         ? {
             name: {
@@ -18,38 +17,13 @@ const getProducts = asyncHandler(async (req, res) => {
         }
         : {};
 
-    // Parse price filter parameters
-    const minPrice = req.query.minPrice !== undefined ? Number(req.query.minPrice) : 0;
-    const maxPrice = req.query.maxPrice !== undefined ? Number(req.query.maxPrice) : Number.MAX_SAFE_INTEGER;
-
-    // Parse category filter if provided
-    const categoryFilter = req.query.category ? { category: req.query.category } : {};
-
-    // Combine all filters
-    const filters = {
-        ...keyword,
-        price: { $gte: minPrice, $lte: maxPrice },
-        ...categoryFilter
-    };
-
-    // Remove filters with undefined or null values
-    Object.keys(filters).forEach(key => {
-        if (filters[key] === undefined || filters[key] === null || (typeof filters[key] === 'object' && Object.keys(filters[key]).length === 0)) {
-            delete filters[key];
-        }
-    });
-
-    const count = await Product.countDocuments(filters);
-    const products = await Product.find(filters)
+    const count = await Product.countDocuments({ ...keyword });
+    const products = await Product.find({ ...keyword })
         .limit(pageSize)
         .skip(pageSize * (page - 1));
 
     res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
-
-// module.exports = {
-//     getProducts
-// };
 
 // @desc Fetch a product
 // @route GET /api/products/:id
@@ -177,6 +151,35 @@ const getTopProducts = asyncHandler(async (req, res) => {
     res.status(200).json(products);
 });
 
+// @desc Fetch filtered products
+// @route GET /api/products/filter
+// @access Public
+const getFilteredProducts = asyncHandler(async (req, res) => {
+    const pageSize = process.env.PAGINATION_LIMIT;
+    const page = Number(req.query.pageNumber) || 1;
+
+    // Parse and validate query parameters
+    const minPrice = req.query.minPrice ? parseInt(req.query.minPrice) : 0;
+    const maxPrice = req.query.maxPrice ? parseInt(req.query.maxPrice) : Number.MAX_SAFE_INTEGER;
+    const category = req.query.category ? req.query.category : '';
+
+    // Build the filter object based on query parameters
+    const filter = {};
+    if (minPrice !== 0 || maxPrice !== Number.MAX_SAFE_INTEGER) {
+        filter.price = { $gte: minPrice, $lte: maxPrice };
+    }
+    if (category !== '') {
+        filter.category = category;
+    }
+
+    const count = await Product.countDocuments(filter);
+    const products = await Product.find(filter)
+        .limit(pageSize)
+        .skip(pageSize * (page - 1));
+
+    res.json({ products, page, pages: Math.ceil(count / pageSize) });
+});
+
 export {
     getProducts,
     getProductById,
@@ -185,4 +188,5 @@ export {
     deleteProduct,
     createProductReview,
     getTopProducts,
+    getFilteredProducts,
 };

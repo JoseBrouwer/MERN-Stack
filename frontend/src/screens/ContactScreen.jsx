@@ -1,55 +1,55 @@
-import React, { useState } from 'react';
+
+import { useState } from 'react';
+import React, { useRef } from "react";
+import emailjs from '@emailjs/browser';
 
 const ContactScreen = () => {
-  const [subject, setSubject] = useState('');
-  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [stateMessage, setStateMessage] = useState(null);
+const form = useRef();
 
-  const handleSubmit = (e) => {
+  const sendEmail = (e) => {
+    e.persist();
     e.preventDefault();
-    if (!subject || !message) {
-      alert('Please fill in all fields');
-      return;
-    }
-  
-    const emailContent = {
-      subject: subject,
-      message: message,
-      email: 'theemernshop@example.com' 
-      // password for email: theemernshop1!
-    };
-    console.log(emailContent);  
-    alert('Email sent successfully!');
+    setIsSubmitting(true);
+    emailjs
+      .sendForm(
+        "service_q3pke07",
+        "template_tc8zgzf",
+        form.current,
+        "ivMfhdoFjGt68Sjxw"
+      )
+      .then(
+        (result) => {
+          setStateMessage('Message sent!');
+          setIsSubmitting(false);
+          setTimeout(() => {
+            setStateMessage(null);
+          }, 5000); // hide message after 5 seconds
+        },
+        (error) => {
+          setStateMessage('Something went wrong, please try again later');
+          setIsSubmitting(false);
+          setTimeout(() => {
+            setStateMessage(null);
+          }, 5000); // hide message after 5 seconds
+        }
+      );
     
-    setSubject('');
-    setMessage('');
+    // Clears the form after sending the email
+    e.target.reset();
   };
-
   return (
-    <div>
-      <h1>Contact Us</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="subject">Subject:</label>
-          <input
-            type="text"
-            id="subject"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="message">Message:</label>
-          <textarea
-            id="message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          ></textarea>
-        </div>
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+    <form onSubmit={sendEmail}>
+      <label>Name</label>
+      <input type="text" name="user_name" />
+      <label>Email</label>
+      <input type="email" name="user_email" />
+      <label>Message</label>
+      <textarea name="message" />
+      <input type="submit" value="Send" disabled={isSubmitting} />
+      {stateMessage && <p>{stateMessage}</p>}
+    </form>
   );
 };
-
 export default ContactScreen;
-

@@ -106,6 +106,7 @@ if (filterExists) {
                 onChange={(e) => setSelectedCategories(Array.from(e.target.selectedOptions, (option) => option.value))}
               >
                 <option value="Electronics">Electronics</option>
+                <option value="Sample category">Sample category</option>
               </Form.Control>
             </Form.Group>
             <Button variant="primary" type="submit">

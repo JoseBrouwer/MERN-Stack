@@ -41,9 +41,20 @@ const LoginScreen = () => {
         }
     };
 
+    const handleGoogleLogin = () => {
+        window.location.href = '/api/users/google';
+    };
+
+    const handleFacebookLogin = () => {
+        window.location.href = '/api/users/facebook';
+    };
+
     return (
       <FormContainer>
         <h1>Sign In</h1>
+
+        <Button onClick={handleGoogleLogin}>Sign in with Google</Button>
+        <Button onClick={handleFacebookLogin}>Sign in with Facebook</Button>
 
         <Form onSubmit={submitHandler}>
             <Form.Group controlId="email" className="my-3">

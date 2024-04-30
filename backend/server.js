@@ -8,6 +8,8 @@ import userRoutes from "./routes/userRoutes.js";
 import orderRoutes from './routes/orderRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import dotenv from 'dotenv';
+import passport from 'passport';
+import './config/passportConfig.js';
 const port = process.env.PORT || 5000; //different port for backend
 
 dotenv.config();
@@ -21,6 +23,8 @@ app.use(express.urlencoded({extended: true}));
 
 //Cookie parser middleware
 app.use(cookieParser());
+
+app.use(passport.initialize());
 
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);

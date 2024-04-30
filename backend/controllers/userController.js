@@ -184,6 +184,52 @@ const updateUser = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc Google OAuth callback
+// @access Public
+const googleCallback = async (accessToken, refreshToken, profile, done) => {
+    const newUser = {
+      googleId: profile.id,
+      name: profile.displayName,
+      email: profile.emails[0].value,
+    }
+  
+    try {
+      let user = await User.findOne({ googleId: profile.id })
+  
+      if (user) {
+        done(null, user)
+      } else {
+        user = await User.create(newUser)
+        done(null, user)
+      }
+    } catch (err) {
+      console.error(err)
+    }
+};
+
+// @desc Facebook OAuth callback
+// @access Public
+const facebookCallback = async (accessToken, refreshToken, profile, done) => {
+    const newUser = {
+      facebookId: profile.id,
+      name: profile.displayName,
+      email: profile.emails[0].value,
+    }
+  
+    try {
+      let user = await User.findOne({ facebookId: profile.id })
+  
+      if (user) {
+        done(null, user)
+      } else {
+        user = await User.create(newUser)
+        done(null, user)
+      }
+    } catch (err) {
+      console.error(err)
+    }
+};
+
 export {
     authUser, 
     registerUser,
@@ -193,5 +239,8 @@ export {
     getUsers,
     deleteUser, 
     getUserByID, 
-    updateUser
+    updateUser,
+    googleCallback,
+    facebookCallback,
+    generateToken
 }

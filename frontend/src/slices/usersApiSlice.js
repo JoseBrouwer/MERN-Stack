@@ -58,6 +58,19 @@ export const usersApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Users'],
         }),
+        googleLogin: builder.query({
+            query: () => ({
+                url: `${USERS_URL}/google`,
+                method: 'GET',
+            }),
+        }),
+
+        facebookLogin: builder.query({
+            query: () => ({
+                url: `${USERS_URL}/facebook`,
+                method: 'GET',
+            }),
+        }),
     }),
 });
 
@@ -71,4 +84,6 @@ export const {
     useDeleteUserMutation,
     useGetUserDetailsQuery, 
     useUpdateUserMutation,
+    useGoogleLoginQuery,
+    useFacebookLoginQuery
 } = usersApiSlice;

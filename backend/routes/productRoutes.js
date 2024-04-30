@@ -19,6 +19,9 @@ router.route('/').get(getProducts).post(protect, admin, createProduct);
 // Route for getting top rated products
 router.get('/top', getTopProducts);
 
+// Route for filtering search
+router.get('/filter', getFilteredProducts);
+
 // Route for getting a product by ID, updating, or deleting it
 router
     .route('/:id')
@@ -29,7 +32,5 @@ router
 // Route for creating a review for a product
 router.route('/:id/reviews').post(protect, checkObjectId, createProductReview);
 
-// Route for filtering search
-router.get('/filter', getFilteredProducts);
 
 export default router;

@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import Message from '../components/Message';
 import Paginate from '../components/Paginate';
 import Meta from '../components/Meta';
-import { useGetProductsQuery } from '../slices/productsApiSlice';
+import { useGetProductsQuery, useGetFilteredProductsQuery } from '../slices/productsApiSlice';
 
 const SearchResults = () => {
   const { keyword } = useParams();
@@ -18,6 +18,11 @@ const SearchResults = () => {
   const [maxPrice, setMaxPrice] = useState(queryParams.get('maxPrice') || '');
   const [selectedCategories, setSelectedCategories] = useState(queryParams.get('categories')?.split(',') || []);
   const [pageNumber, setPageNumber] = useState(1);
+  
+
+  const [formMinPrice, setFormMinPrice] = useState(minPrice || '');
+  const [formMaxPrice, setFormMaxPrice] = useState(maxPrice || '');
+  const [formSelectedCategories, setFormSelectedCategories] = useState(selectedCategories || []);
 
   useEffect(() => {
     const params = new URLSearchParams(search);
@@ -31,13 +36,40 @@ const SearchResults = () => {
     navigate(`/search/${keyword}/filter?minPrice=${minPrice}&maxPrice=${maxPrice}&categories=${selectedCategories.join(',')}`);
   };
 
-  const { data, isLoading, error } = useGetProductsQuery({
-    keyword,
-    minPrice,
-    maxPrice,
-    categories: selectedCategories,
-    pageNumber,
-  });
+// call both hooks
+const {
+  data: allProductsData,
+  isLoading: allProductsLoading,
+  error: allProductsError,
+} = useGetProductsQuery({
+  keyword,
+  pageNumber,
+});
+
+const {
+  data: filteredProductsData,
+  isLoading: filteredProductsLoading,
+  error: filteredProductsError,
+} = useGetFilteredProductsQuery({
+  keyword,
+  minPrice,
+  maxPrice,
+  categories: selectedCategories,
+  pageNumber,
+});
+
+// logic for whether to use filteredProductsData or allProductsData
+let data = allProductsData,
+  isLoading = allProductsLoading,
+  error = allProductsError;
+
+const filterExists = minPrice || maxPrice || selectedCategories.length > 0;
+
+if (filterExists) {
+  data = filteredProductsData;
+  isLoading = filteredProductsLoading;
+  error = filteredProductsError;
+}
 
   return (
     <>
@@ -45,7 +77,7 @@ const SearchResults = () => {
       <h1>Search Results for "{keyword}"</h1>
       <Row>
         <Col md={3}>
-          <h2>Filters</h2>
+        <h2>Filters</h2>
           <Form onSubmit={handleFilterSubmit}>
             <Form.Group controlId="minPrice">
               <Form.Label>Min Price</Form.Label>

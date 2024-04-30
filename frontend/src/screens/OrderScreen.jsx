@@ -65,11 +65,6 @@ const OrderScreen = () => {
     });
   }
 
-  async function onApproveTest() {
-    await payOrder({ orderId, details: { payer: {} } });
-    refetch();
-    toast.success("Payment Successful");
-  }
 
   function onError(err) {
     toast.error(err.message);
@@ -148,8 +143,8 @@ const OrderScreen = () => {
                 <Message>Order is empty</Message>
               ) : (
                 <ListGroup variant="flush">
-                  {order.orderItems.map((item, index) => (
-                    <ListGroup.Item key={index}>
+                  {order.orderItems.map((item) => (
+                    <ListGroup.Item key={item._id}>
                       <Row>
                         <Col md={1}>
                           <Image
@@ -241,8 +236,7 @@ const OrderScreen = () => {
 
               {loadingDeliver && <Loader />}
 
-              {userInfo &&
-                userInfo.isAdmin &&
+              { userInfo?.isAdmin &&
                 order.isPaid &&
                 !order.isDelivered && (
                   <ListGroup.Item>

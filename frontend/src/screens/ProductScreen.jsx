@@ -10,6 +10,7 @@ import { useGetProductDetailsQuery, useCreateReviewMutation } from '../slices/pr
 import Loader from "../components/Loader";
 import Message from "../components/Message.jsx";
 import { addToCart } from '../slices/cartSlice.js';
+import { addToSaveForLater } from '../slices/laterSlice.js';
 import Meta from "../components/Meta.jsx";
 
 const ProductScreen = () => {
@@ -56,6 +57,11 @@ const ProductScreen = () => {
     dispatch(addToCart({ ...product, qty }));
     navigate('/cart');
   }
+
+  const addToSaveForLaterHandler = () => {
+    dispatch(addToSaveForLater({ ...product, qty }));
+    navigate("/saveforlater");
+  };
 
   return (
     <>
@@ -150,6 +156,17 @@ const ProductScreen = () => {
                       Add To Cart
                     </Button>
                   </ListGroup.Item>
+
+                  <ListGroup.Item>
+                    <Button
+                      className="btn-block"
+                      type="button"
+                      onClick={addToSaveForLaterHandler}
+                    >
+                      Save For Later
+                    </Button>
+                  </ListGroup.Item>
+
                 </ListGroup>
               </Card>
             </Col>

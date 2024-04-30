@@ -20,7 +20,7 @@ const ProfileScreen = () => {
 
     const { userInfo } = useSelector((state) => state.auth);
 
-    const [updateProfile, { isLoading: loadingUpdateProfile }] =
+    const [updateProfile] =
       useProfileMutation();
 
     const { data: orders, isLoading, error } = useGetMyOrdersQuery();
@@ -103,13 +103,13 @@ const ProfileScreen = () => {
         </Col>
         <Col md={9}>
           <h2>My Orders</h2>
-          {isLoading ? (
+          if (isLoading) {
             <Loader />
-          ) : error ? (
-            <Message variant="danger">
+          } else if (error) {
+            <Message varaint ="danger">
               {error?.data?.message || error.error}
             </Message>
-          ) : (
+          } else {
             <Table striped table hover responsive className="table-sm">
               <thead>
                 <tr>
@@ -152,7 +152,7 @@ const ProfileScreen = () => {
                 ))}
               </tbody>
             </Table>
-          )}
+          }
         </Col>
       </Row>
     );

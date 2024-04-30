@@ -25,6 +25,7 @@ import PaymentScreen from './screens/PaymentScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/OrderScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import SaveForLaterScreen from './screens/SaveForLaterScreen';
 import AdminRoute from './components/AdminRoute';
 import OrderListScreen from './screens/admin/OrderListScreen';
 import ProductListScreen from './screens/admin/ProductListScreen';
@@ -32,6 +33,7 @@ import ProductEditScreen from './screens/admin/ProductEditScreen';
 import UserListScreen from './screens/admin/UserListScreen';
 import UserEditScreen from './screens/admin/UserEditScreen';
 import SearchResults from './screens/SearchResults';
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -42,6 +44,7 @@ const router = createBrowserRouter(
       <Route path='/cart' element={<CartScreen />} />
       <Route path='/login' element={<LoginScreen />} />
       <Route path='/register' element={<RegisterScreen />} />
+      <Route path='/saveforlater' element={<SaveForLaterScreen />} />
 
       // Search Functionality
       <Route path="/search/:keyword" element={<SearchResults />} />

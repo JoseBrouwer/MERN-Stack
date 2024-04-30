@@ -105,13 +105,7 @@ if (filterExists) {
                 value={selectedCategories}
                 onChange={(e) => setSelectedCategories(Array.from(e.target.selectedOptions, (option) => option.value))}
               >
-                {/* Check if data.categories is defined before mapping */}
-                {data?.categories &&
-                  data.categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
+                <option value="Electronics">Electronics</option>
               </Form.Control>
             </Form.Group>
             <Button variant="primary" type="submit">

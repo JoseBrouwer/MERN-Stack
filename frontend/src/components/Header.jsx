@@ -58,6 +58,13 @@ const logoutHandler = async () => {
                 </Nav.Link>
               </LinkContainer>
 
+
+              <LinkContainer to="/contact">
+                  <Nav.Link href="/contact">
+                    <FaUser /> Contact{" "}
+                  </Nav.Link>
+              </LinkContainer>
+
               <LinkContainer to="/saveforlater">
                 <Nav.Link href="/saveforlater">
                   <FaBookmark /> Save For Later

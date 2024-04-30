@@ -25,6 +25,7 @@ import PaymentScreen from './screens/PaymentScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/OrderScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import ContactScreen from './screens/ContactScreen';
 import SaveForLaterScreen from './screens/SaveForLaterScreen';
 import AdminRoute from './components/AdminRoute';
 import OrderListScreen from './screens/admin/OrderListScreen';
@@ -41,6 +42,9 @@ const router = createBrowserRouter(
       <Route index={true} path="/" element={<HomeScreen />} />
       <Route path='/page/:pageNumber' element={<HomeScreen />} />
       <Route path='/product/:id' element={<ProductScreen />} />
+      
+      <Route path='/contact' element={<ContactScreen />} />
+      
       <Route path='/cart' element={<CartScreen />} />
       <Route path='/login' element={<LoginScreen />} />
       <Route path='/register' element={<RegisterScreen />} />

@@ -1,19 +1,21 @@
-import { Spinner } from "react-bootstrap";
 
 import React from 'react'
 
 const Loader = () => {
   return (
-    <Spinner
-        animation="border"
-        role="status"
+
+    <div
+        className="spinner-border"
         style={{
-            width: "100px",
-            height: "100px",
-            margin: "auto",
-            display: "block",
+          width: "100px",
+          height: "100px",
+          margin: "auto",
+          display: "block"
         }}
-    ></Spinner>
+    >
+        <output className="visually-hidden">Loading...</output>
+    </div>
+
   )
 };
 

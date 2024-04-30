@@ -1,7 +1,7 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import Product from "../models/productModel.js";
 
-// @desc Fetch all products
+// @desc Fetch all products with optional filters
 // @route GET /api/products
 // @access Public
 const getProducts = asyncHandler(async (req, res) => {
@@ -151,6 +151,45 @@ const getTopProducts = asyncHandler(async (req, res) => {
     res.status(200).json(products);
 });
 
+// @desc Fetch filtered products
+// @route GET /api/products/filter
+// @access Public
+const getFilteredProducts = asyncHandler(async (req, res) => {
+    const { minPrice, maxPrice, categories, keyword = '', pageNumber = 1 } = req.query;
+
+    const pageSize = parseInt(process.env.PAGINATION_LIMIT);
+
+    const keywordFilter = keyword
+      ? { name: { $regex: keyword, $options: 'i' } } 
+      : {};
+  
+    const priceFilter = { price: { $gte: minPrice || 0, $lte: maxPrice || Number.MAX_SAFE_INTEGER } };
+
+    const categoryFilter = categories ? { category: { $in: categories.split(',') } } : {};
+
+    const filter = {
+        ...keywordFilter,
+        ...priceFilter,
+        ...categoryFilter,
+    };
+
+    try {
+        const count = await Product.countDocuments(filter);
+        console.log('Count of filtered products:', count);
+
+    const products = await Product.find(filter)
+        .limit(pageSize)
+        .skip(pageSize * (pageNumber - 1));
+
+    console.log('Fetched Products', products);
+
+    res.status(200).json({ products, page: pageNumber, pages: Math.ceil(count / pageSize) });
+    } catch (error) {
+    console.log('Error fetching filtered products:', error);
+    res.status(500).json({ message: 'Error fetching filtered products', error: error.message });
+    }
+});  
+
 export {
     getProducts,
     getProductById,
@@ -159,4 +198,5 @@ export {
     deleteProduct,
     createProductReview,
     getTopProducts,
+    getFilteredProducts,
 };

@@ -1,7 +1,7 @@
 import React from 'react';
-import {useNavigate} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {Navbar, Nav, Container, Badge, NavDropdown} from 'react-bootstrap';
-import {FaShoppingCart, FaUser} from 'react-icons/fa';
+import { FaShoppingCart, FaUser, FaBookmark } from "react-icons/fa";
 import {LinkContainer} from 'react-router-bootstrap';
 import {useSelector, useDispatch} from 'react-redux';
 import {useLogoutMutation} from '../slices/usersApiSlice';
@@ -13,6 +13,7 @@ import { resetCart } from "../slices/cartSlice";
 const Header = () => {
   const {cartItems} = useSelector((state) => state.cart);
   const {userInfo} = useSelector((state) => state.auth);
+  const {savedItems} = useSelector((state) => state.later);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -57,6 +58,24 @@ const logoutHandler = async () => {
                 </Nav.Link>
               </LinkContainer>
 
+
+              <LinkContainer to="/contact">
+                  <Nav.Link href="/contact">
+                    <FaUser /> Contact{" "}
+                  </Nav.Link>
+              </LinkContainer>
+
+              <LinkContainer to="/saveforlater">
+                <Nav.Link href="/saveforlater">
+                  <FaBookmark /> Save For Later
+                  {savedItems.length > 0 && (
+                    <Badge pill bg="success" style={{ marginLeft: "5px" }}>
+                      {savedItems.length}
+                    </Badge>
+                  )}
+                </Nav.Link>
+              </LinkContainer>
+
               {userInfo ? (
                 <NavDropdown title={userInfo.name} id="username">
                   <LinkContainer to="/profile">
@@ -73,7 +92,7 @@ const logoutHandler = async () => {
                   </Nav.Link>
                 </LinkContainer>
               )}
-              {userInfo && userInfo.isAdmin && (
+              {userInfo?.isAdmin && (
                 <NavDropdown title="Admin" id="adminmenu">
                   <LinkContainer to="/admin/productlist">
                     <NavDropdown.Item>Products</NavDropdown.Item>

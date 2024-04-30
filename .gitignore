@@ -24,6 +24,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+sonar-project.properties
+.scannerwork/
+
 #package.json
 #package-lock.json
 sonar-project.properties
